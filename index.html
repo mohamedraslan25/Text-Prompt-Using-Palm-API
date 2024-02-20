@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generative AI Web App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: #B6BBC4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #F0ECE5;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            min-height: 90vh;
+        }
+
+        h1,
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 0.5em;
+        }
+
+        form {
+            width: 100%;
+            /* Change the width as needed */
+            margin: 20px auto;
+            background-color: #F0ECE5;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        input,
+        button {
+            width: 60%;
+            /* Change the width as needed */
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #161A30;
+            box-sizing: border-box;
+        }
+
+        input {
+            color: #2c3e50;
+        }
+
+        button {
+            background-color: #161A30;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .generated-response {
+            color: #48bb78;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Generative AI</h1>
+
+    </header>
+    <div class="container">
+        <form method="post" action="/train">
+            <input type="number" id="num_examples" name="num_examples" min="1"
+                placeholder='Enter The Number of Questions' required />
+            <button type="button" onclick="createTrainingInputs()">
+                Create
+            </button>
+
+            <div id="training_inputs"></div>
+
+            <button type="submit">Train</button>
+        </form>
+
+
+        <form method="post" action="/test">
+            <input type="text" id="test_input" name="test_input" placeholder='Enter Testing Question' required />
+            <button type="submit">Generateive</button>
+        </form>
+
+        {% if test_input %}
+        <div class="result">
+            <p>{{ test_input }}</p>
+        </div>
+        {% endif %} {% if generated_response %}
+        <div class="result">
+            <p class="generated-response">{{ generated_response }}</p>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        function createTrainingInputs() {
+            var numExamples = document.getElementById("num_examples").value;
+            var trainingInputsDiv = document.getElementById("training_inputs");
+            trainingInputsDiv.innerHTML = "";
+
+            for (var i = 1; i <= numExamples; i++) {
+                var divRow = document.createElement("div");
+                divRow.classList.add("row");
+
+                var inputDiv = document.createElement("div");
+                inputDiv.classList.add("input-group");
+
+                var inputTextbox = document.createElement("input");
+                inputTextbox.setAttribute("type", "text");
+                inputTextbox.setAttribute("id", "train_input_" + i);
+                inputTextbox.setAttribute("name", "train_input_" + i);
+                inputTextbox.setAttribute("placeholder", "Training input " + i);
+                inputTextbox.setAttribute("required", true);
+
+                var outputTextbox = document.createElement("input");
+                outputTextbox.setAttribute("type", "text");
+                outputTextbox.setAttribute("id", "train_output_" + i);
+                outputTextbox.setAttribute("name", "train_output_" + i);
+                outputTextbox.setAttribute("placeholder", "Output " + i);
+                outputTextbox.setAttribute("required", true);
+
+                divRow.appendChild(inputDiv);
+                inputDiv.appendChild(inputTextbox);
+
+                var outputDiv = document.createElement("div");
+                outputDiv.classList.add("input-group");
+
+                outputDiv.appendChild(outputTextbox);
+
+                divRow.appendChild(outputDiv);
+                trainingInputsDiv.appendChild(divRow);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
